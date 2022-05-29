@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+   	match /users/{userId} {
+    	allow read: if request.auth != null;
+	    allow write: if request.auth.uid == userId;
+    }
+  	match /courts/{court} {
+    	allow read: if true;
+
+			// Prevent creation or deletion, admin manages the courts from UI
+    	allow create, delete: if false;
+
+      // Allow the client to update only these fields
+      allow update: if (request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['freeCourt', 'isRaining', 'updatedAt']));
+    }
+    match /events/{event} {
+    	allow read, write: if request.auth != null;
+    }
+    match /scraped_data/{data} {
+    	allow read: if request.auth != null;
+    }
+  }
+}
