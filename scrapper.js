@@ -108,22 +108,21 @@ const browserConfiguration = async () => {
       const timeFormating = dateTimeFormating[1].split('-');
 
       courtAvailability.push({
-        available_times: [
-          { availability: 'Available' },
-          { end_time: timeFormat(timeFormating[1].trim()) },
-          { start_time: timeFormat(timeFormating[0].trim()) },
-        ],
+        available_times: {
+          availability: 'Available',
+          end_time: timeFormat(timeFormating[1].trim()),
+          start_time: timeFormat(timeFormating[0].trim()),
+        },
+
         date: monthFormat(monthYearName, dateTimeFormating[0]),
       });
     });
 
-    const finalFormat = {};
-    finalFormat[cardName] = courtAvailability;
-
     scrappedData = {
       ...scrappedData,
-      ...finalFormat,
     };
+
+    scrappedData[cardName] = courtAvailability;
 
     courtAvailability = [];
 
